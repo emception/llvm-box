@@ -1,0 +1,5 @@
+{
+  "name": "CMake",
+  "description": "Installs the latest version of CMake from the Kitware APT repository",
+  "version": "1.0.0"
+}
