@@ -1,0 +1,10 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/universal",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": false
+      }
+    }
+  }
+}
