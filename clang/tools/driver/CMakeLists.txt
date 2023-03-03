@@ -48,7 +48,15 @@ clang_target_link_libraries(clang
 if(WIN32 AND NOT CYGWIN)
   # Prevent versioning if the buildhost is targeting for Win32.
 else()
-  set_target_properties(clang PROPERTIES VERSION ${CLANG_EXECUTABLE_VERSION})
+  # FORK(jcbhmr/llvm-box): Don't set the VERSION property on clang for Linux. I
+  # don't know why this was changed, but it was in the llvm-project.patch [1]
+  # from the original jprendes/emception project. If I had to guess, I'd say
+  # that something about the VERSION property messes with Emscripten when it
+  # compiles things?
+  #
+  # [1]: https://github.com/jprendes/emception/blob/366065547b1a59cb58011ed19aedce70c3bcbd2b/patches/llvm-project.patch#L24-L25
+
+  # set_target_properties(clang PROPERTIES VERSION ${CLANG_EXECUTABLE_VERSION})
 endif()
 
 # Support plugins.
