@@ -1,21 +1,15 @@
 #!/bin/bash
 set -e
 
+# Simulate feature options
+export VERSION=3.26.0-rc5
+
 # https://askubuntu.com/a/865294
-
-apt remove --purge --auto-remove -y cmake
-
-apt update
-apt install -y software-properties-common lsb-release
-apt clean all
-
-wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
-
-apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main"
-
-apt update
-apt install -y kitware-archive-keyring
-rm /etc/apt/trusted.gpg.d/kitware.gpg
-
-apt update
-apt install -y cmake
+mkdir "/opt/cmake-$VERSION"
+cd "/opt/cmake-$VERSION"
+wget "https://cmake.org/files/v$VERSION/cmake-$VERSION.tar.gz"
+tar -xzvf "cmake-$VERSION.tar.gz"
+cd "cmake-$VERSION"
+./bootstrap
+make "-j$(nproc)"
+make install
