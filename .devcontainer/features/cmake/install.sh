@@ -3,7 +3,7 @@ set -e
 
 # https://askubuntu.com/a/865294
 
-apt remove --purge --auto-remove cmake
+apt remove --purge --auto-remove -y cmake
 
 apt update
 apt install -y software-properties-common lsb-release
@@ -14,8 +14,8 @@ wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | 
 apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main"
 
 apt update
-apt install kitware-archive-keyring
+apt install -y kitware-archive-keyring
 rm /etc/apt/trusted.gpg.d/kitware.gpg
 
 apt update
-apt install cmake
+apt install -y cmake
