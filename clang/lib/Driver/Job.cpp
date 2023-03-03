@@ -411,8 +411,16 @@ int CC1Command::Execute(ArrayRef<std::optional<StringRef>> Redirects,
   // FIXME: Currently, if there're more than one job, we disable
   // -fintegrate-cc1. If we're no longer a integrated-cc1 job, fallback to
   // out-of-process execution. See discussion in https://reviews.llvm.org/D74447
-  if (!InProcess)
-    return Command::Execute(Redirects, ErrMsg, ExecutionFailed);
+
+  // FORK(jcbhmr/llvm-box): Remove the early return. I don't fully understand
+  // why, but it was in the original Emception llvm-project.patch [1]
+  // modification. If I had to guess, I'd say that it has something to do with
+  // subprocesses or multi-proccesses?
+  //
+  // [1] https://github.com/jprendes/emception/blob/366065547b1a59cb58011ed19aedce70c3bcbd2b/patches/llvm-project.patch#L9-L12
+
+  // if (!InProcess)
+  //   return Command::Execute(Redirects, ErrMsg, ExecutionFailed);
 
   PrintFileNames();
 
