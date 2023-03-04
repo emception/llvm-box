@@ -1,0 +1,14 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/cpp",
+  "features": {
+    "./features/cmake": {},
+    "ghcr.io/ebaskoro/devcontainer-features/emscripten": {}
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": false
+      }
+    }
+  }
+}
