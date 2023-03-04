@@ -1,7 +1,8 @@
 {
   "image": "mcr.microsoft.com/devcontainers/cpp",
   "features": {
-    "./features/cmake": {}
+    "./features/cmake": {},
+    "ghcr.io/ebaskoro/devcontainer-features/emscripten": {}
   },
   "customizations": {
     "vscode": {
