@@ -1,8 +1,18 @@
 #!/bin/bash
 
-docker build -t emception_build docker
-mkdir -p build/emsdk_cache
-docker run -it --rm \
+SRC=$(dirname $0)
+SRC=$(realpath "$SRC")
+
+pushd $SRC/docker
+docker build \
+    -t emception_build \
+    .
+popd
+
+mkdir -p $(pwd)/build/emsdk_cache
+
+docker run \
+    -it --rm \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $(pwd):$(pwd) \
     -v $(pwd)/build/emsdk_cache:/emsdk/upstream/emscripten/cache \
