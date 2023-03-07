@@ -1,122 +1,77 @@
-# The LLVM Compiler Infrastructure
+<div align="center">
 
-This directory and its sub-directories contain the source code for LLVM,
-a toolkit for the construction of highly optimized compilers,
-optimizers, and run-time environments.
+![🚧 Under construction 👷‍♂️](https://i.imgur.com/LEP2R3N.png)
 
-The README briefly describes how to get started with building LLVM.
-For more information on how to contribute to the LLVM project, please
-take a look at the
-[Contributing to LLVM](https://llvm.org/docs/Contributing.html) guide.
+</div>
 
-## Getting Started with the LLVM System
+# `llvm-box`
 
-Taken from [here](https://llvm.org/docs/GettingStarted.html).
+📦 A single WebAssembly binary of all the LLVM infrastructure & commands \
+🔀 Forked from [llvm/llvm-project]
 
-### Overview
+<div align="center">
 
-Welcome to the LLVM project!
+![]()
 
-The LLVM project has multiple components. The core of the project is
-itself called "LLVM". This contains all of the tools, libraries, and header
-files needed to process intermediate representations and convert them into
-object files. Tools include an assembler, disassembler, bitcode analyzer, and
-bitcode optimizer. It also contains basic regression tests.
+</div>
 
-C-like languages use the [Clang](http://clang.llvm.org/) frontend. This
-component compiles C, C++, Objective-C, and Objective-C++ code into LLVM bitcode
--- and from there into object files, using LLVM.
+🎁 Nice compact WASM bundle \
+🗃️ Avoids repeated code across multiple binaries \
+🖥️ Works with [WASI]
 
-Other components include:
-the [libc++ C++ standard library](https://libcxx.llvm.org),
-the [LLD linker](https://lld.llvm.org), and more.
+🌐 Wan't a convenient API to compile C++ code right from your browser? Check
+out the mother [Emception] project!
 
-### Getting the Source Code and Building LLVM
+❓ Want to learn more about [BusyBox]? Check out their [What is Busybox?] FAQ!
 
-The LLVM Getting Started documentation may be out of date. The [Clang
-Getting Started](http://clang.llvm.org/get_started.html) page might have more
-accurate information.
+## Development
 
-This is an example work-flow and configuration to get and build the LLVM source:
+⚠️ This repository is a [fork]! We try to change as little as possible to make
+keeping on-top of upstream changes as easy as possible. For instance, this means
+**not** running custom code formatters, **not** customizing names unless needed,
+and generally **not** touching anything that isn't needed.
 
-1. Checkout LLVM (including related sub-projects like Clang):
+🔃 Every so often, we will merge upstream changes back into this fork to keep
+up-to-date with the latest and greatest LLVM code. We just need to make sure it
+works with Emscripten and compiles to WASM! 😉
 
-     * ``git clone https://github.com/llvm/llvm-project.git``
+This project uses devcontainers to configure the development environment. You
+can get started by opening this repo in [GitHub Codespaces] right from your
+browser!
 
-     * Or, on windows, ``git clone --config core.autocrlf=false
-    https://github.com/llvm/llvm-project.git``
+### Building the project
 
-2. Configure and build LLVM and Clang:
+📜 For more information about how LLVM works, how to build it, etc. you can
+check out the original [`README.md`] that has been left untouched.
 
-     * ``cd llvm-project``
+The gist is that you can run the following command sequence on **Linux/WSL2** to
+get a successful build:
 
-     * ``cmake -S llvm -B build -G <generator> [options]``
+```sh
+mkdir -p build
+cmake -S llvm -B build -G Ninja # UNVERIFIED
+```
 
-        Some common build system generators are:
+### Changes from LLVM upstream
 
-        * ``Ninja`` --- for generating [Ninja](https://ninja-build.org)
-          build files. Most llvm developers use Ninja.
-        * ``Unix Makefiles`` --- for generating make-compatible parallel makefiles.
-        * ``Visual Studio`` --- for generating Visual Studio projects and
-          solutions.
-        * ``Xcode`` --- for generating Xcode projects.
+Since we need to do some additional build stuff, we have made _some_ changes. In
+order to make everyone's lives easier, it's helpful to describe those changes
+here _in addition to describing them in commits and PRs_.
 
-        Some common options:
+1. Added a `README.markdown` file which is alphabetically sorted to override the
+    original `README.md` file. This was done to emphasize that this project is
+    _not intended to merge with upstream_ and to describe the project.
+2. Removed the `.github/PULL_REQUEST_TEMPLATE.md` which warned against opening
+    PRs. LLVM had their own custom code merge process, but here we just use
+    GitHub's system.
 
-        * ``-DLLVM_ENABLE_PROJECTS='...'`` and ``-DLLVM_ENABLE_RUNTIMES='...'`` ---
-          semicolon-separated list of the LLVM sub-projects and runtimes you'd like to
-          additionally build. ``LLVM_ENABLE_PROJECTS`` can include any of: clang,
-          clang-tools-extra, cross-project-tests, flang, libc, libclc, lld, lldb,
-          mlir, openmp, polly, or pstl. ``LLVM_ENABLE_RUNTIMES`` can include any of
-          libcxx, libcxxabi, libunwind, compiler-rt, libc or openmp. Some runtime
-          projects can be specified either in ``LLVM_ENABLE_PROJECTS`` or in
-          ``LLVM_ENABLE_RUNTIMES``.
-
-          For example, to build LLVM, Clang, libcxx, and libcxxabi, use
-          ``-DLLVM_ENABLE_PROJECTS="clang" -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi"``.
-
-        * ``-DCMAKE_INSTALL_PREFIX=directory`` --- Specify for *directory* the full
-          path name of where you want the LLVM tools and libraries to be installed
-          (default ``/usr/local``). Be careful if you install runtime libraries: if
-          your system uses those provided by LLVM (like libc++ or libc++abi), you
-          must not overwrite your system's copy of those libraries, since that
-          could render your system unusable. In general, using something like
-          ``/usr`` is not advised, but ``/usr/local`` is fine.
-
-        * ``-DCMAKE_BUILD_TYPE=type`` --- Valid options for *type* are Debug,
-          Release, RelWithDebInfo, and MinSizeRel. Default is Debug.
-
-        * ``-DLLVM_ENABLE_ASSERTIONS=On`` --- Compile with assertion checks enabled
-          (default is Yes for Debug builds, No for all other build types).
-
-      * ``cmake --build build [-- [options] <target>]`` or your build system specified above
-        directly.
-
-        * The default target (i.e. ``ninja`` or ``make``) will build all of LLVM.
-
-        * The ``check-all`` target (i.e. ``ninja check-all``) will run the
-          regression tests to ensure everything is in working order.
-
-        * CMake will generate targets for each tool and library, and most
-          LLVM sub-projects generate their own ``check-<project>`` target.
-
-        * Running a serial build will be **slow**. To improve speed, try running a
-          parallel build. That's done by default in Ninja; for ``make``, use the option
-          ``-j NNN``, where ``NNN`` is the number of parallel jobs to run.
-          In most cases, you get the best performance if you specify the number of CPU threads you have.
-          On some Unix systems, you can specify this with ``-j$(nproc)``.
-
-      * For more information see [CMake](https://llvm.org/docs/CMake.html).
-
-Consult the
-[Getting Started with LLVM](https://llvm.org/docs/GettingStarted.html#getting-started-with-llvm)
-page for detailed information on configuring and compiling LLVM. You can visit
-[Directory Layout](https://llvm.org/docs/GettingStarted.html#directory-layout)
-to learn about the layout of the source code tree.
-
-## Getting in touch
-
-Join [LLVM Discourse forums](https://discourse.llvm.org/), [discord chat](https://discord.gg/xS7Z362) or #llvm IRC channel on [OFTC](https://oftc.net/).
-
-The LLVM project has adopted a [code of conduct](https://llvm.org/docs/CodeOfConduct.html) for
-participants to all modes of communication within the project.
+<!-- prettier-ignore-start -->
+[BusyBox]: https://busybox.net/
+[What is Busybox?]: https://busybox.net/FAQ.html#whatis
+[llvm/llvm-project]: https://github.com/llvm/llvm-project#readme
+[`README.md`]: README.md
+[fork]: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
+[GitHub Codespaces]: https://github.com/features/codespaces
+[WASI]: https://wasi.dev/
+[Emception]: https://github.com/jcbhmr/emception#readme
+<!-- prettier-ignore-end -->
