@@ -11,11 +11,11 @@ set -e
 # dependency that we need to make before making the parent project.
 cmake -G Ninja \
   -S llvm \
-  -B build/llvm-native \
+  -B build/step-1 \
   -DCMAKE_BUILD_TYPE=Release \
   -DLLVM_TARGETS_TO_BUILD=WebAssembly \
   -DLLVM_ENABLE_PROJECTS=clang
-cmake --build build/llvm-native -- llvm-tblgen clang-tblgen
+cmake --build build/step-1 -- llvm-tblgen clang-tblgen
 
 # Start a subshell so that we can incrementally export ... over multiple lines.
 # If we try to do all these env vars in one prefix, it gets to be a mess of
@@ -37,7 +37,7 @@ cmake --build build/llvm-native -- llvm-tblgen clang-tblgen
     --js-library=$PWD/tools/fsroot.js"
   emcmake cmake -G Ninja \
     -S llvm \
-    -B build/llvm-wasm \
+    -B build/step-2 \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_TARGETS_TO_BUILD=WebAssembly \
     -DLLVM_ENABLE_PROJECTS='clang;lld;clang-tools-extra' \
@@ -49,6 +49,7 @@ cmake --build build/llvm-native -- llvm-tblgen clang-tblgen
     -DLLVM_ENABLE_THREADS=OFF \
     -DLLVM_BUILD_LLVM_DYLIB=OFF \
     -DLLVM_INCLUDE_TESTS=OFF \
-    -DLLVM_TABLEGEN=build/llvm-native/bin/llvm-tblgen \
-    -DCLANG_TABLEGEN=build/llvm-native/bin/clang-tblgen
+    -DLLVM_TABLEGEN=build/step-1/bin/llvm-tblgen \
+    -DCLANG_TABLEGEN=build/step-1/bin/clang-tblgen
 )
+# cmake --build build/step-2 -- llvm-box
